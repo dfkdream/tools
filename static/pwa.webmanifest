@@ -1,0 +1,19 @@
+{
+  "name": "sveltekit-pwa",
+  "short_name": "sveltekit-pwa",
+  "scope": ".",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "rgb(247 247 248)",
+  "theme_color": "rgb(247 247 248)",
+  "description": "sveltekit pwa template",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
