@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-    <title>SvelteKit PWA</title>
+    <title>Tools</title>
 </svelte:head>
   
 <App theme="ios">

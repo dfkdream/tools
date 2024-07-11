@@ -24,7 +24,7 @@ precacheAndRoute([
     })
 ]);
 
-const skRoutes = ["/", "/test/"];
+const skRoutes = ["/", "/weather/"];
 
 precache(skRoutes.map(f => {
     return {
