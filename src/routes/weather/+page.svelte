@@ -2,6 +2,8 @@
     import { Block, Navbar, Page, NavbarBackLink, BlockTitle, BlockHeader, List, ListItem, Preloader } from 'konsta/svelte';
     import { onMount } from 'svelte';
 
+    const timeFormat = new Intl.DateTimeFormat([], {dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Seoul'});
+
     const precipitationTypes = {
         "0": "강수없음",
         "1": "비",
@@ -10,7 +12,7 @@
         "5": "빗방울",
         "6": "빗방울눈날림",
         "7": "눈날림"
-    }
+    };
 
     let observation = null;
     let forecast = null;
@@ -23,7 +25,7 @@
         fetch("https://api.tools.dfkdream.dev/weather/forecast.json")
         .then(resp=>resp.json())
         .then(json=>{forecast=json})
-    })
+    });
 
 </script>
 
@@ -54,7 +56,7 @@
     </Block>
     {:else}
     {#each forecast.Forecast as weather}
-    <BlockHeader>{(new Date(weather.Time)).toLocaleString()}</BlockHeader>
+    <BlockHeader>{timeFormat.format(new Date(weather.Time))}</BlockHeader>
     <List strong inset colors={weather.PrecipitationType=="0" ? {strongBgIos: "bg-green-200"} : {}}>
         <ListItem title="강수량" after={weather.PrecipitationAmount} />
         <ListItem title="강수형태" after={precipitationTypes[weather.PrecipitationType]} />
@@ -69,10 +71,10 @@
     <BlockTitle>정보</BlockTitle>
     <List strong inset>
         {#if observation!=null}
-        <ListItem title="현재 날씨 발표시각" after={(new Date(observation.Time)).toLocaleString()} />
+        <ListItem title="현재 날씨 발표시각" after={timeFormat.format(new Date(observation.Time))} />
         {/if}
         {#if forecast!=null}
-        <ListItem title="초단기예보 발표시각" after={(new Date(forecast.ForecastTime)).toLocaleString()} />
+        <ListItem title="초단기예보 발표시각" after={timeFormat.format(new Date(forecast.ForecastTime))} />
         {/if}
     </List>
     {/if}
