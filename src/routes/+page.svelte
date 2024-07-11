@@ -3,7 +3,7 @@
 </script>
 
 <Page>
-    <Navbar title="Tools" />
+    <Navbar title="Tools" translucent={false} />
 
     <List strong inset>
         <ListItem href="/weather" title="날씨" />

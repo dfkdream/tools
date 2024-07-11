@@ -30,7 +30,7 @@
 </script>
 
 <Page>
-    <Navbar title="날씨">
+    <Navbar title="날씨" translucent={false}>
         <NavbarBackLink slot="left" text="Tools" onClick={()=>{history.back()}} />
     </Navbar>
 
