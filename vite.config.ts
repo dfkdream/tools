@@ -10,6 +10,10 @@ export default defineConfig({
 	plugins: [
 		sveltekit(),
 		SvelteKitPWA({
+			strategies: "injectManifest",
+			srcDir: "src",
+			filename: "service-worker.js",
+			injectRegister: null,
 			manifest: {
 				name: "Tools",
 				short_name: "Tools",
@@ -26,7 +30,6 @@ export default defineConfig({
 					}
 				]
 			},
-			registerType: "autoUpdate"
 		}),
 		basicSSL({
 			name: "tools-dfkdream-dev"
