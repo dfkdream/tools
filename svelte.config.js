@@ -14,6 +14,9 @@ const config = {
 		adapter: adapter(),
 		serviceWorker: {
 			register: false
+		},
+		paths: {
+			relative: false
 		}
 	}
 };
