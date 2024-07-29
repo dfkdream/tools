@@ -91,7 +91,7 @@
 </script>
 
 <Page>
-    <Navbar title="튜너" translucent={false}>
+    <Navbar title="튜너">
         <NavbarBackLink slot="left" text="Tools" onClick={()=>{history.back()}} />
     </Navbar>
 
