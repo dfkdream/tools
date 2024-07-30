@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Page, Navbar, NavbarBackLink, List, ListItem, Block, BlockTitle, Badge, ListInput, Segmented, SegmentedButton, Button } from 'konsta/svelte';
+    import { Navbar, NavbarBackLink, List, ListItem, Block, BlockTitle, Badge, ListInput, Segmented, SegmentedButton, Button } from 'konsta/svelte';
     import { onDestroy, onMount } from 'svelte';
 
     import { Tuner } from './tuner';
@@ -90,64 +90,62 @@
     });
 </script>
 
-<Page>
-    <Navbar title="튜너">
-        <NavbarBackLink slot="left" text="Tools" onClick={()=>{history.back()}} />
-    </Navbar>
+<Navbar title="튜너">
+    <NavbarBackLink slot="left" text="Tools" onClick={()=>{history.back()}} />
+</Navbar>
 
-    <List strong inset>
-        <ListItem title="RMS">
-            <Badge slot="after" 
-                colors={inputAvailable?{bg: 'bg-blue-500'}:{bg: 'bg-neutral-500'}}>
-                {(volume*100).toFixed(2)+"%"}
-            </Badge>
-        </ListItem>
-        <ListItem title="Assessed String" after={assessedString} />
-        <ListItem title="Frequency" after={freq.toFixed(2)+" Hz"} />
+<List strong inset>
+    <ListItem title="RMS">
+        <Badge slot="after" 
+            colors={inputAvailable?{bg: 'bg-blue-500'}:{bg: 'bg-neutral-500'}}>
+            {(volume*100).toFixed(2)+"%"}
+        </Badge>
+    </ListItem>
+    <ListItem title="Assessed String" after={assessedString} />
+    <ListItem title="Frequency" after={freq.toFixed(2)+" Hz"} />
+</List>
+
+<BlockTitle>Visualization</BlockTitle>
+<Block strong inset>
+    <canvas bind:this={WaveformCanvas} width={tunerConfig.fftsize-1} height="128" class="w-full" />
+</Block>
+
+<BlockTitle>Configurations</BlockTitle>
+<Block strong inset>
+    <Segmented strong>
+        <SegmentedButton strong
+            active={activeSetting==0}
+            onClick={()=>{activeSetting=0}}
+        >Strings</SegmentedButton>
+        <SegmentedButton strong
+            active={activeSetting==1}
+            onClick={()=>{activeSetting=1}}
+        >Advanced</SegmentedButton>
+    </Segmented>
+
+    {#if activeSetting==0}
+    <List class="!my-3">
+    {#each Object.keys(tunerConfig.strings) as string}
+        <ListInput label={string} type="number" value={tunerConfig.strings[string]} /> 
+    {/each}
     </List>
+    {:else}
+    <List class="!my-3">
+        <ListInput label="Gain" type="number" value={tunerConfig.gain} onInput={e=>{tunerConfig.gain=e.target.value}}/>
+        <ListInput label="Minimum RMS" type="number" value={tunerConfig.rmsMinimum} onInput={e=>{tunerConfig.rmsMinimum=e.target.value}}/>
+        <ListInput label="Attack RMS" type="number" value={tunerConfig.rmsAttackThreshold} onInput={e=>{tunerConfig.rmsAttackThreshold=e.target.value}}/>
+        <ListInput label="Attack Delay" type="number" value={tunerConfig.attackDelay} onInput={e=>{tunerConfig.attackDelay=e.target.value}}/>
+        <ListInput label="Assessment Duration" type="number" value={tunerConfig.assessmentDuration} onInput={e=>{tunerConfig.assessmentDuration=e.target.value}}/>
+    </List>
+    {/if}
 
-    <BlockTitle>Visualization</BlockTitle>
-    <Block strong inset>
-        <canvas bind:this={WaveformCanvas} width={tunerConfig.fftsize-1} height="128" class="w-full" />
-    </Block>
-
-    <BlockTitle>Configurations</BlockTitle>
-    <Block strong inset>
-        <Segmented strong>
-            <SegmentedButton strong
-                active={activeSetting==0}
-                onClick={()=>{activeSetting=0}}
-            >Strings</SegmentedButton>
-            <SegmentedButton strong
-                active={activeSetting==1}
-                onClick={()=>{activeSetting=1}}
-            >Advanced</SegmentedButton>
-        </Segmented>
-
-        {#if activeSetting==0}
-        <List class="!my-3">
-        {#each Object.keys(tunerConfig.strings) as string}
-            <ListInput label={string} type="number" value={tunerConfig.strings[string]} /> 
-        {/each}
-        </List>
-        {:else}
-        <List class="!my-3">
-            <ListInput label="Gain" type="number" value={tunerConfig.gain} onInput={e=>{tunerConfig.gain=e.target.value}}/>
-            <ListInput label="Minimum RMS" type="number" value={tunerConfig.rmsMinimum} onInput={e=>{tunerConfig.rmsMinimum=e.target.value}}/>
-            <ListInput label="Attack RMS" type="number" value={tunerConfig.rmsAttackThreshold} onInput={e=>{tunerConfig.rmsAttackThreshold=e.target.value}}/>
-            <ListInput label="Attack Delay" type="number" value={tunerConfig.attackDelay} onInput={e=>{tunerConfig.attackDelay=e.target.value}}/>
-            <ListInput label="Assessment Duration" type="number" value={tunerConfig.assessmentDuration} onInput={e=>{tunerConfig.assessmentDuration=e.target.value}}/>
-        </List>
-        {/if}
-
-        <div class="grid grid-cols-2 gap-x-4">
-            <Button onClick={()=>{
-                tuner?.detatchMicrophone();
-                tuner = new Tuner(tunerConfig, visualizeCallback, resultCallback);
-            }}>Apply</Button>
-            <Button class="bg-red-500" onClick={()=>{
-                tunerConfig = structuredClone(defaultTunerConfig);
-            }}>Reset</Button>
-        </div>
-    </Block>
-</Page>
+    <div class="grid grid-cols-2 gap-x-4">
+        <Button onClick={()=>{
+            tuner?.detatchMicrophone();
+            tuner = new Tuner(tunerConfig, visualizeCallback, resultCallback);
+        }}>Apply</Button>
+        <Button class="bg-red-500" onClick={()=>{
+            tunerConfig = structuredClone(defaultTunerConfig);
+        }}>Reset</Button>
+    </div>
+</Block>
