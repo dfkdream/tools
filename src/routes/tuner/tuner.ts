@@ -92,8 +92,6 @@ export class Tuner {
                 difference: 0,
             };
         }
-
-        console.log(this.stringCandidates);
     }
 
     resetStringCandidates() {
