@@ -46,6 +46,8 @@
         },
     };
 
+    let currentTunerConfig = structuredClone(defaultTunerConfig);
+
     let tunerConfig = structuredClone(defaultTunerConfig);
 
     function visualizeCallback(data: Float32Array, rms: number) {
@@ -72,7 +74,7 @@
     }
 
     function resultCallback(stringName: string, frequency: number) {
-        assessedString = stringName;
+        assessedString = `${stringName} (${currentTunerConfig.strings[stringName]} Hz)`;
         freq = frequency;
     }
 
@@ -199,6 +201,9 @@
         <Button
             onClick={() => {
                 tuner?.detatchMicrophone();
+
+                currentTunerConfig = structuredClone(tunerConfig);
+
                 tuner = new Tuner(
                     tunerConfig,
                     visualizeCallback,
