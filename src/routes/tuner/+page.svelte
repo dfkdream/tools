@@ -161,7 +161,7 @@
                 <ListInput
                     label={string}
                     type="number"
-                    value={tunerConfig.strings[string]}
+                    bind:value={tunerConfig.strings[string]}
                 />
             {/each}
         </List>
@@ -170,42 +170,27 @@
             <ListInput
                 label="Gain"
                 type="number"
-                value={tunerConfig.gain}
-                onInput={(e) => {
-                    tunerConfig.gain = e.target.value;
-                }}
+                bind:value={tunerConfig.gain}
             />
             <ListInput
                 label="Minimum RMS"
                 type="number"
-                value={tunerConfig.rmsMinimum}
-                onInput={(e) => {
-                    tunerConfig.rmsMinimum = e.target.value;
-                }}
+                bind:value={tunerConfig.rmsMinimum}
             />
             <ListInput
                 label="Attack RMS"
                 type="number"
-                value={tunerConfig.rmsAttackThreshold}
-                onInput={(e) => {
-                    tunerConfig.rmsAttackThreshold = e.target.value;
-                }}
+                bind:value={tunerConfig.rmsAttackThreshold}
             />
             <ListInput
                 label="Attack Delay"
                 type="number"
-                value={tunerConfig.attackDelay}
-                onInput={(e) => {
-                    tunerConfig.attackDelay = e.target.value;
-                }}
+                bind:value={tunerConfig.attackDelay}
             />
             <ListInput
                 label="Assessment Duration"
                 type="number"
-                value={tunerConfig.assessmentDuration}
-                onInput={(e) => {
-                    tunerConfig.assessmentDuration = e.target.value;
-                }}
+                bind:value={tunerConfig.assessmentDuration}
             />
         </List>
     {/if}
