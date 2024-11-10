@@ -27,6 +27,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"konsta": "https://github.com/dfkdream/konsta/releases/download/v0.0.3/release-v0.0.3.tar.gz"
+		"konsta": "https://github.com/dfkdream/konsta/releases/download/v0.0.5/release-v0.0.5.tar.gz"
 	}
 }
