@@ -1,5 +1,5 @@
 <script>
-    import { Navbar, List, ListItem } from 'konsta/svelte';
+    import { Navbar, List, ListItem } from "konsta/svelte";
 </script>
 
 <Navbar title="Tools" translucent={false} />
