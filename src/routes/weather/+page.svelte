@@ -178,6 +178,15 @@
     {/each}
 {/if}
 
+<BlockTitle>레이더 강수량</BlockTitle>
+<Block strong inset>
+    <img
+        class="m-auto"
+        src="https://api.tools.dfkdream.dev/weather/radar.png"
+        alt="레이더 강수량"
+    />
+</Block>
+
 {#if observation != null || forecast != null}
     <BlockTitle>정보</BlockTitle>
     <List strong inset>
