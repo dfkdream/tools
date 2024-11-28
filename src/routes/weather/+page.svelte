@@ -8,6 +8,7 @@
         List,
         ListItem,
         Preloader,
+        ListInput,
     } from "konsta/svelte";
     import { onMount } from "svelte";
 
@@ -41,18 +42,36 @@
         Forecast: Weather[];
     };
 
+    type location = {
+        X: number;
+        Y: number;
+    };
+
+    let locations: Record<string, location> = {
+        화원명곡체육공원: { X: 87, Y: 89 },
+        두류공원: { X: 88, Y: 90 },
+    };
+
+    let currentLocationName: string | null = null;
+    let currentLocation: location | null = null;
+
     let observation: Weather | null = null;
     let forecast: Forecast | null = null;
 
-    onMount(() => {
-        fetch("https://api.tools.dfkdream.dev/weather/observation.json")
+    function fetchWeatherData(x: number, y: number) {
+        observation = null;
+        forecast = null;
+
+        fetch(
+            `https://api.tools.dfkdream.dev/weather/observation-${x}-${y}.json`,
+        )
             .then((resp) => resp.json())
             .then((json: Weather) => {
                 json.Time = new Date(json.Time);
                 observation = json;
             });
 
-        fetch("https://api.tools.dfkdream.dev/weather/forecast.json")
+        fetch(`https://api.tools.dfkdream.dev/weather/forecast-${x}-${y}.json`)
             .then((resp) => resp.json())
             .then((json: Forecast) => {
                 json.ForecastTime = new Date(json.ForecastTime);
@@ -62,7 +81,20 @@
                 });
                 forecast = json;
             });
+    }
+
+    onMount(() => {
+        currentLocationName =
+            localStorage.getItem("weather.location") || "화원명곡체육공원";
     });
+
+    $: (() => {
+        if (!currentLocationName) return;
+        currentLocation = locations[currentLocationName];
+    })();
+
+    $: currentLocation &&
+        fetchWeatherData(currentLocation.X, currentLocation.Y);
 </script>
 
 <Navbar title="날씨">
@@ -74,6 +106,23 @@
         }}
     />
 </Navbar>
+
+<List strong inset>
+    <ListInput
+        label="위치"
+        type="select"
+        dropdown
+        bind:value={currentLocationName}
+        onChange={() => {
+            if (!currentLocationName) return;
+            localStorage.setItem("weather.location", currentLocationName);
+        }}
+    >
+        {#each Object.keys(locations) as location}
+            <option value={location}>{location}</option>
+        {/each}
+    </ListInput>
+</List>
 
 <BlockTitle>현재 날씨</BlockTitle>
 {#if observation == null}
