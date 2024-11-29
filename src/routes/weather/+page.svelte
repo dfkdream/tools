@@ -9,6 +9,7 @@
         ListItem,
         Preloader,
         ListInput,
+        Badge,
     } from "konsta/svelte";
     import { onMount } from "svelte";
 
@@ -27,6 +28,15 @@
         "6": "빗방울눈날림",
         "7": "눈날림",
     };
+
+    function badgeColor(precipitationType: string) {
+        switch (precipitationType) {
+            case "0":
+                return { bg: "bg-green-700" };
+            default:
+                return { bg: "bg-neutral-500" };
+        }
+    }
 
     type Weather = {
         Time: Date;
@@ -130,21 +140,19 @@
         <Preloader size="w-8 h-8" />
     </Block>
 {:else}
-    <List
-        strong
-        inset
-        colors={observation.PrecipitationType == "0"
-            ? { strongBgIos: "bg-green-200" }
-            : {}}
-    >
+    <List strong inset>
         <ListItem
             title="강수량"
             after={observation.PrecipitationAmount + "mm"}
         />
-        <ListItem
-            title="강수형태"
-            after={precipitationTypes[observation.PrecipitationType]}
-        />
+        <ListItem title="강수형태">
+            <Badge
+                slot="after"
+                colors={badgeColor(observation.PrecipitationType)}
+            >
+                {precipitationTypes[observation.PrecipitationType]}
+            </Badge>
+        </ListItem>
         <ListItem title="온도" after={observation.Temperature + "°C"} />
         <ListItem title="습도" after={observation.Humidity + "%"} />
         <ListItem title="풍속" after={observation.WindSpeed + "m/s"} />
@@ -159,18 +167,16 @@
 {:else}
     {#each forecast.Forecast as weather}
         <BlockHeader>{timeFormat.format(weather.Time)}</BlockHeader>
-        <List
-            strong
-            inset
-            colors={weather.PrecipitationType == "0"
-                ? { strongBgIos: "bg-green-200" }
-                : {}}
-        >
+        <List strong inset>
             <ListItem title="강수량" after={weather.PrecipitationAmount} />
-            <ListItem
-                title="강수형태"
-                after={precipitationTypes[weather.PrecipitationType]}
-            />
+            <ListItem title="강수형태">
+                <Badge
+                    slot="after"
+                    colors={badgeColor(weather.PrecipitationType)}
+                >
+                    {precipitationTypes[weather.PrecipitationType]}
+                </Badge>
+            </ListItem>
             <ListItem title="온도" after={weather.Temperature + "°C"} />
             <ListItem title="습도" after={weather.Humidity + "%"} />
             <ListItem title="풍속" after={weather.WindSpeed + "m/s"} />
