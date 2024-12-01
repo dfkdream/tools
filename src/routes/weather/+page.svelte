@@ -10,6 +10,7 @@
         Preloader,
         ListInput,
         Badge,
+        Button,
     } from "konsta/svelte";
     import { onMount } from "svelte";
     import { PUBLIC_GITHUB_SHA } from "$env/static/public";
@@ -101,9 +102,12 @@
             });
     }
 
+    let userAgent = "";
+
     onMount(() => {
         currentLocationName =
             localStorage.getItem("weather.location") || "화원명곡체육공원";
+        userAgent = window.navigator.userAgent;
     });
 
     $: (() => {
@@ -115,12 +119,12 @@
         fetchWeatherData(currentLocation.X, currentLocation.Y);
 
     const issueReportSubject = "[tools-날씨] 오래된 날씨 데이터 오류";
-    $: issueReportBody = encodeURIComponent(
+    $: issueReportBody =
         `(선택) 항목은 오류 확인에 도움을 주는 데이터입니다. 지우셔도 됩니다.\n\n` +
-            `위치 (선택): ${currentLocationName}\n` +
-            `발생시각 (선택): ${timeFormat.format(new Date())}\n` +
-            `Commit: ${PUBLIC_GITHUB_SHA}`,
-    );
+        `위치 (선택): ${currentLocationName}\n` +
+        `발생시각 (선택): ${timeFormat.format(new Date())}\n` +
+        `UA 혹은 브라우저 이름 (선택): ${userAgent}\n` +
+        `Commit: ${PUBLIC_GITHUB_SHA}`;
 </script>
 
 <Navbar title="날씨">
@@ -155,11 +159,40 @@
         ⚠️ 날씨 데이터가 오래되었습니다. 새로고침 후에도 이 메시지가 사라지지
         않는다면
         <a
-            href={`mailto:support@dfkdream.dev?subject=${issueReportSubject}&body=${issueReportBody}`}
+            href={`mailto:support@dfkdream.dev?subject=${issueReportSubject}&body=${encodeURIComponent(issueReportBody)}`}
         >
             support@dfkdream.dev
         </a>
         로 문의해 주세요.️ ⚠️
+
+        <details class="mt-2">
+            <summary>양식 보기</summary>
+            <pre class="overflow-scroll mt-2">제목: {issueReportSubject}
+
+{issueReportBody}</pre>
+            <Button
+                class="mt-2"
+                onClick={(e) => {
+                    navigator.clipboard.writeText(issueReportSubject);
+                    e.target.innerText = "✅ 복사 완료";
+
+                    setTimeout(() => {
+                        e.target.innerText = "제목 복사";
+                    }, 2000);
+                }}>제목 복사</Button
+            >
+            <Button
+                class="mt-2"
+                onClick={(e) => {
+                    navigator.clipboard.writeText(issueReportBody);
+                    e.target.innerText = "✅ 복사 완료";
+
+                    setTimeout(() => {
+                        e.target.innerText = "내용 복사";
+                    }, 2000);
+                }}>내용 복사</Button
+            >
+        </details>
     </Block>
 {/if}
 
