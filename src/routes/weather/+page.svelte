@@ -12,6 +12,7 @@
         Badge,
     } from "konsta/svelte";
     import { onMount } from "svelte";
+    import { PUBLIC_GITHUB_SHA } from "$env/static/public";
 
     const timeFormat = new Intl.DateTimeFormat("default", {
         dateStyle: "medium",
@@ -68,9 +69,14 @@
     let observation: Weather | null = null;
     let forecast: Forecast | null = null;
 
+    let diff = 0;
+    let diffLimit = new Date(Date.UTC(1970, 0, 1, 3)).getTime(); // 3 hours
+
     function fetchWeatherData(x: number, y: number) {
         observation = null;
         forecast = null;
+
+        let now = new Date().getTime();
 
         fetch(
             `https://api.tools.dfkdream.dev/weather/observation-${x}-${y}.json`,
@@ -78,6 +84,7 @@
             .then((resp) => resp.json())
             .then((json: Weather) => {
                 json.Time = new Date(json.Time);
+                diff = Math.max(diff, now - json.Time.getTime());
                 observation = json;
             });
 
@@ -85,6 +92,7 @@
             .then((resp) => resp.json())
             .then((json: Forecast) => {
                 json.ForecastTime = new Date(json.ForecastTime);
+                diff = Math.max(diff, now - json.ForecastTime.getTime());
                 json.Forecast = json.Forecast.map((v) => {
                     v.Time = new Date(v.Time);
                     return v;
@@ -105,6 +113,14 @@
 
     $: currentLocation &&
         fetchWeatherData(currentLocation.X, currentLocation.Y);
+
+    const issueReportSubject = "[tools-날씨] 오래된 날씨 데이터 오류";
+    $: issueReportBody = encodeURIComponent(
+        `(선택) 항목은 오류 확인에 도움을 주는 데이터입니다. 지우셔도 됩니다.\n\n` +
+            `위치 (선택): ${currentLocationName}\n` +
+            `발생시각 (선택): ${timeFormat.format(new Date())}\n` +
+            `Commit: ${PUBLIC_GITHUB_SHA}`,
+    );
 </script>
 
 <Navbar title="날씨">
@@ -133,6 +149,19 @@
         {/each}
     </ListInput>
 </List>
+
+{#if diff > diffLimit}
+    <Block strong inset class="text-center">
+        ⚠️ 날씨 데이터가 오래되었습니다. 새로고침 후에도 이 메시지가 사라지지
+        않는다면
+        <a
+            href={`mailto:support@dfkdream.dev?subject=${issueReportSubject}&body=${issueReportBody}`}
+        >
+            support@dfkdream.dev
+        </a>
+        로 문의해 주세요.️ ⚠️
+    </Block>
+{/if}
 
 <BlockTitle>현재 날씨</BlockTitle>
 {#if observation == null}
