@@ -70,7 +70,7 @@
     let forecast: Forecast | null = null;
 
     let diff = 0;
-    let diffLimit = new Date(Date.UTC(1970, 0, 1, 3)).getTime(); // 3 hours
+    let diffLimit = Date.UTC(1970, 0, 1, 3); // 3 hours
 
     function fetchWeatherData(x: number, y: number) {
         observation = null;
