@@ -30,7 +30,7 @@
     let activeSetting = 0;
 
     const defaultTunerConfig: TunerConfig = {
-        gain: 3,
+        gain: 2,
         fftsize: 2048,
         rmsMinimum: 0.008,
         rmsAttackThreshold: 0.006,
@@ -44,6 +44,8 @@
             B3: 246.932,
             E4: 329.628,
         },
+        bandpassFrequency: 206.01745,
+        bandpassQ: 0.7,
     };
 
     let currentTunerConfig = structuredClone(defaultTunerConfig);
@@ -193,6 +195,16 @@
                 label="Assessment Duration"
                 type="number"
                 bind:value={tunerConfig.assessmentDuration}
+            />
+            <ListInput
+                label="Bandpass Frequency"
+                type="number"
+                bind:value={tunerConfig.bandpassFrequency}
+            />
+            <ListInput
+                label="Bandpass Q"
+                type="number"
+                bind:value={tunerConfig.bandpassQ}
             />
         </List>
     {/if}

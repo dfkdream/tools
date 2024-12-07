@@ -31,6 +31,8 @@ export type TunerConfig = {
     attackDelay: number;
     assessmentDuration: number;
     strings: strings;
+    bandpassFrequency: number;
+    bandpassQ: number;
 };
 
 type stringCandidates = {
@@ -170,8 +172,15 @@ export class Tuner {
         const inputGain = this.audioContext.createGain();
         inputGain.gain.value = this.config.gain;
 
+        const filter = new BiquadFilterNode(this.audioContext, {
+            type: "bandpass",
+            frequency: this.config.bandpassFrequency,
+            Q: this.config.bandpassQ,
+        });
+
         source.connect(inputGain);
-        inputGain.connect(this.analyser);
+        inputGain.connect(filter);
+        filter.connect(this.analyser);
 
         this.isActive = true;
 
