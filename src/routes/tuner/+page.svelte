@@ -12,7 +12,7 @@
         SegmentedButton,
         Button,
     } from "konsta/svelte";
-    import { onDestroy, onMount } from "svelte";
+    import { onMount } from "svelte";
 
     import { Tuner } from "./tuner";
     import type { TunerConfig } from "./tuner";
@@ -100,14 +100,14 @@
         tuner = new Tuner(tunerConfig, visualizeCallback, resultCallback);
 
         document.addEventListener("visibilitychange", visibilityChangeHandler);
-    });
 
-    onDestroy(() => {
-        document.removeEventListener(
-            "visibilitychange",
-            visibilityChangeHandler,
-        );
-        tuner?.detatchMicrophone();
+        return () => {
+            document.removeEventListener(
+                "visibilitychange",
+                visibilityChangeHandler,
+            );
+            tuner?.detatchMicrophone();
+        };
     });
 </script>
 
