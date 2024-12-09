@@ -80,6 +80,14 @@
         freq = frequency;
     }
 
+    function visibilityChangeHandler() {
+        if (document.hidden) {
+            tuner?.detatchMicrophone();
+        } else {
+            tuner?.attachMicrophone();
+        }
+    }
+
     onMount(() => {
         let ctx = WaveformCanvas.getContext("2d");
         if (!ctx) {
@@ -91,16 +99,14 @@
 
         tuner = new Tuner(tunerConfig, visualizeCallback, resultCallback);
 
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden) {
-                tuner?.detatchMicrophone();
-            } else {
-                tuner?.attachMicrophone();
-            }
-        });
+        document.addEventListener("visibilitychange", visibilityChangeHandler);
     });
 
     onDestroy(() => {
+        document.removeEventListener(
+            "visibilitychange",
+            visibilityChangeHandler,
+        );
         tuner?.detatchMicrophone();
     });
 </script>
