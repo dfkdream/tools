@@ -62,6 +62,7 @@
     let locations: Record<string, location> = {
         화원명곡체육공원: { X: 87, Y: 89 },
         두류공원: { X: 88, Y: 90 },
+        팔거천: { X: 88, Y: 92 },
     };
 
     let currentLocationName: string | null = null;
